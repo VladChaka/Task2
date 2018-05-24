@@ -1,6 +1,7 @@
 let http = require("http"),
 	url = require("url");
 
+start();
 function start() {
 	http.createServer(function(req, res){
 		var pathname = url.parse(req.url).pathname;
@@ -27,8 +28,6 @@ function start() {
 	}).listen(1111);
 	console.log("Server started");
 }
-
-start();
 
 function hello(req, res) {
 	res.writeHead(200, { "Content-Type": "text/html" });
