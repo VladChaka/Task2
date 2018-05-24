@@ -7,24 +7,26 @@ function start() {
 		var pathname = url.parse(req.url).pathname;
 
 		if (pathname === "/start") {
-			hello();
+			hello(req, res);
+		} else if (pathname === "" || pathname === "/") {
+				var body = 
+			'<html>' +
+				'<head>' +
+					'<meta charset=UTF-8" />' +
+				'</head>' +
+				'<body>' +
+					'<form action="/start" method="POST">' +
+						'<input type="submit" value="Click" />' +
+					'</form>' +
+				'</body>' +
+			'</html>';
+			
+			res.writeHead(200, { "Content-Type": "text/html" });
+			res.write(body);
+			res.end();
 		}
 		
-		var body = 
-		'<html>' +
-			'<head>' +
-				'<meta charset=UTF-8" />' +
-			'</head>' +
-			'<body>' +
-				'<form action="/start" method="POST">' +
-					'<input type="submit" value="Click" />' +
-				'</form>' +
-			'</body>' +
-		'</html>';
 		
-		res.writeHead(200, { "Content-Type": "text/html" });
-		res.write(body);
-		res.end();
 	}).listen(1111);
 	console.log("Server started");
 }
