@@ -45,15 +45,15 @@ function body (req, res, apiCon){
 		});
 
 		if (event === "First") {
-			func = First;
+			str = First;
 		} 
 		else if (event === "Second"){
-			func = Second;
+			str = Second;
 		}
 		else if (event === "Three"){
-			func = Three;
+			str = Three;
 		}
-
+		
 		res.write(str());
 	}		
 	res.end();	
