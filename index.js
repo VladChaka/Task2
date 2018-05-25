@@ -1,14 +1,12 @@
 let http = require("http"),
-    url = require("url"),
-    // First = function () { return console.log("First"); },
-    // Second = function () { return console.log("Second"); },
-	// Three = function () { return console.log("Three"); },
+	url = require("url"),
+	func = function() { return "error";	},
     First = function () { return "First"; },
     Second = function () { return "Second"; },
     Three = function () { return "Three"; },
 	port = arguments("port"),	
 	config = arguments("inf"),
-	apiConfig = (config === "") ? '{ "/": "First", "/start": "Second", "/test": { "/text": "Three" } }' : {
+	apiConfig = (config === "") ? '{ "/": "First", "/start": "Second", "/test1": { "/test2": "Three" } }' : {
 		"/": First,
 		"/start": Second,
 		"/test": {
@@ -23,8 +21,10 @@ console.log("Server started on : ", port);
 
 function body (req, res, apiCon){
 	
-	//var pathname = url.parse(apiCon, true);
+	//var pathname = url.parse(, true);
 	//pathname = pathname.pathname;
+	//console.log(url);
+	
 	
 	//if (pathname === "/") {
 	//	First(req, res);
@@ -39,21 +39,10 @@ function body (req, res, apiCon){
 
 		let result = null;
 
-		var event = JSON.parse(apiCon, function(key, value) {
-			
-			if (myPath == key) {
-				result = value;
-				
-				return value;
-			}			
+		JSON.parse(apiCon, function(key, value) { 
+			if (myPath == key) result = value; 
 		});
-
-		console.log(result);
 		
-		
-		let func = function() {
-			return "error";
-		}
 		if (result === "First") {
 			func = First;
 		} 
