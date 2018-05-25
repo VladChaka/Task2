@@ -1,86 +1,63 @@
 let http = require("http"),
-	url = require("url"),
+    url = require("url"),
+	str = function() { return "error"; },
+    First = function () { return "First"; },
+    Second = function () { return "Second"; },
+    Three = function () { return "Three"; },
 	port = arguments("port"),	
 	config = arguments("inf"),
-	// apiConfig = (config === "") ? 'http://localhost:' + port + '/' : {
-	// 	'/': First(),
-	// 	'/start': Second(),
-	// 	'/test': {
-	// 		'/start1': Thred()
-	// 	}
-	// },
-	apiConfig = (config === "") ? 'http://localhost:' + port + '/' : {
-		'/': function () {
-			console.log("First");
-		},
-		'/start': function (){
-			console.log("Second");
-			
-		},
+	apiConfig = (config === "") ? '{ "/": "First", "/start": "Second", "test": { "/start1": "Three" } }' : {
+		'/': First,
+		'/start': Second,
 		'/test': {
-			'/start1': function(){
-				console.log("Thred");
-			}
+			'/start': Three
 		}
 	},
-	myPath = arguments("path");
-	//myPath = apiConfig[myPath];	
-	console.log(myPath);
-	
-	apiConfig.First();
-	
-	//let func = JSON.parse(apiConfig[myPath]);
-	
+	myPath = arguments("path"),
+	type = typeof(apiConfig);		
 
-	// var pathname = url.parse(apiCon, true);
-	// pathname = pathname.pathname;
-	
-	
-	
+http.createServer((req, res) => body (req, res, apiConfig)).listen(port);
+console.log("Server started on : ", port);
 
-// http.createServer(function (req, res){
+function body (req, res, apiCon){
 	
-// 	var pathname = url.parse(req.url).pathname;
+	//var pathname = url.parse(apiCon, true);
+	//pathname = pathname.pathname;
 	
-// 	if (pathname === "/start") {
-// 		hello(req, res);
-// 	} else if (pathname === "" || pathname === "/") {
-// 			var body = 
-// 		'<html>' +
-// 			'<head>' +
-// 				'<meta charset=UTF-8" />' +
-// 			'</head>' +
-// 			'<body>' +
-// 				'<form action="/start" method="POST">' +
-// 					'<input type="submit" value="Click" />' +
-// 				'</form>' +
-// 			'</body>' +
-// 		'</html>';	
+	//if (pathname === "/") {
+	//	First(req, res);
+	//} 
 
-// 		res.writeHead(200, { "Content-Type": "text/html" });
-// 		res.write(body);
-// 		res.end();
-// 	}
-// }).listen(port);
+	if (type == "object") {
+		res.writeHead(200, { "Content-Type": "application/json" });
+		res.write(apiCon[myPath]());
+	}
+	else if (type == "string") {
+		res.writeHead(200, { "Content-Type": "application/json" }); //text/x-json
 
+		var event = JSON.parse(apiCon, function(key, value) {
+			if (myPath === key) {
+				result = value;
+				
+				return value;
+			} 
+			return result;
+		});
 
-http.createServer().listen(port);
-console.log("Server started on port: ", port);
+		if (event === "First") {
+			func = First;
+		} 
+		else if (event === "Second"){
+			func = Second;
+		}
+		else if (event === "Three"){
+			func = Three;
+		}
 
-
-// function body (req, res, apiCon){
-	
-// 	var pathname = url.parse(apiCon, true);
-// 	pathname = pathname.pathname;
-	
-// 	if (pathname === "/") {
-// 		First(req, res);
-// 	} 
-			
-// 	res.writeHead(200, { "Content-Type": "text/html" });
-// 	res.write(body);
-// 	res.end();	
-// }
+		res.write(str());
+	}		
+	res.end();	
+}
 
 function arguments(argums) {
 	let result = null;
@@ -124,8 +101,11 @@ function arguments(argums) {
 				pref = arg[0];
 	
 			if (pref === "path" || pref === "Path") {
-				result = arg[1];
-				
+				if (arg[1] === "") {
+					result = "/";
+				} else {
+					result = arg[1];
+				}
 				break;
 			}	
 		}
@@ -136,13 +116,6 @@ function arguments(argums) {
 	return result;
 }
 
-function First(req, res) {
-	return "First";
-}
-function Second(req, res) {
-	return "Second";
-}
-function Thred(req, res) {
-	return "Thred";
-}
+
+
 
