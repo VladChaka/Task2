@@ -1,16 +1,18 @@
 let http = require("http"),
     url = require("url"),
-	str = function() { return "error"; },
+    // First = function () { return console.log("First"); },
+    // Second = function () { return console.log("Second"); },
+	// Three = function () { return console.log("Three"); },
     First = function () { return "First"; },
     Second = function () { return "Second"; },
     Three = function () { return "Three"; },
 	port = arguments("port"),	
 	config = arguments("inf"),
-	apiConfig = (config === "") ? '{ "/": "First", "/start": "Second", "test": { "/start1": "Three" } }' : {
-		'/': First,
-		'/start': Second,
-		'/test': {
-			'/start': Three
+	apiConfig = (config === "") ? '{ "/": "First", "/start": "Second", "/test": { "/text": "Three" } }' : {
+		"/": First,
+		"/start": Second,
+		"/test": {
+			"/start": Three
 		}
 	},
 	myPath = arguments("path"),
@@ -27,34 +29,43 @@ function body (req, res, apiCon){
 	//if (pathname === "/") {
 	//	First(req, res);
 	//} 
-
 	if (type == "object") {
 		res.writeHead(200, { "Content-Type": "application/json" });
 		res.write(apiCon[myPath]());
+		
 	}
 	else if (type == "string") {
 		res.writeHead(200, { "Content-Type": "application/json" }); //text/x-json
 
+		let result = null;
+
 		var event = JSON.parse(apiCon, function(key, value) {
-			if (myPath === key) {
+			
+			if (myPath == key) {
 				result = value;
 				
 				return value;
-			} 
-			return result;
+			}			
 		});
 
-		if (event === "First") {
-			str = First;
-		} 
-		else if (event === "Second"){
-			str = Second;
+		console.log(result);
+		
+		
+		let func = function() {
+			return "error";
 		}
-		else if (event === "Three"){
-			str = Three;
+		if (result === "First") {
+			func = First;
+		} 
+		else if (result === "Second"){
+			func = Second;
+		}
+		else if (result === "Three"){
+			func = Three;
 		}
 		
-		res.write(str());
+		
+		res.write(func());
 	}		
 	res.end();	
 }
