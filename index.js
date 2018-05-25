@@ -48,17 +48,12 @@ console.log("Server started on : ", port);
 function startServer (req, res){
 	
 	var pathname = url.parse(req.url, true).pathname;	
-
-	console.log("1",pathname);
 	
 	if (pathname !== "/favicon.ico") {
 
 		let masUrl = parseUrl(req, pathname),
 			respons = checkObj(masUrl, apiConfig),
 			typeRespons = typeof(respons);
-
-			console.log(typeRespons);
-			
 
 		if (typeRespons === "function") {
 			res.writeHead(200, { "Content-Type": "text/plain" }); // text/plain   application/json
