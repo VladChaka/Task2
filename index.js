@@ -5,9 +5,6 @@ let http = require("http"),
     Second = function () { return "Second"; },
     Three = function () { return "Three"; },
 	port = arguments("port"),
-	//config = arguments("inf"),
-	//myPath = arguments("path"),
-	//myPaths = myPath.split("/"),
 	apiConfig = {
 		"": First,
 		"start": Second,
@@ -43,10 +40,8 @@ function arguments(argums) {
 	
 http.createServer((req, res) => startServer(req, res)).listen(port);
 console.log("Server started on : ", port);
-// test1/test2  ['test1', 'test2']
 
 function startServer (req, res){
-	
 	var pathname = url.parse(req.url, true).pathname;	
 	
 	if (pathname !== "/favicon.ico") {
@@ -56,7 +51,7 @@ function startServer (req, res){
 			typeRespons = typeof(respons);
 
 		if (typeRespons === "function") {
-			res.writeHead(200, { "Content-Type": "text/plain" }); // text/plain   application/json
+			res.writeHead(200, { "Content-Type": "text/plain" });
 			res.write(respons());
 			res.end();
 		} else if (typeRespons === "string"){
@@ -68,14 +63,10 @@ function startServer (req, res){
 	}
 }
 
-function parseUrl(req, pathname) {
-	
-	let splitUrl = pathname.split("/");	
-		
-	splitUrl.shift();
-	
+function parseUrl(req, pathname) {	
+	let splitUrl = pathname.split("/");			
+		splitUrl.shift();	
 	return splitUrl;
-
 }
 
 function checkObj(masUrl, apiCon) {
@@ -91,39 +82,3 @@ function checkObj(masUrl, apiCon) {
 	}
 	return respons;
 }
-
-// function myUrl(req, apiCon) {
-// 	let mas = [],
-// 		value = null;
-
-// 	for (let key in apiCon) {
-// 		value = typeof(apiCon[key]);
-
-// 		if (value === "object") {
-// 			for (let ifObj in apiCon[key]) {
-// 				mas.push(ifObj);
-// 			};
-// 		}	
-// 		mas.push(key)
-// 	}
-
-// 	var pathname = url.parse(req.url, true);
-	
-// 	for (let i = 0; i < mas.length; i++) {
-// 		if (pathname.pathname === "/" + mas[i]) {
-// 			mas = apiCon[mas[i]]();
-// 		} 
-// 		else if (pathname.pathname === "/test1/test2") {
-// 			mas = apiCon.test1.test2();
-// 			break;
-// 		}
-// 	}
-	
-// 	return mas;
-// }
-
-
-
-
-
-
