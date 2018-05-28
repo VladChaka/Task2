@@ -1,17 +1,24 @@
 let http = require("http"),
-	url = require("url"),
-	func = function() { return "error";	},
+    url = require("url"),
+    func = function() { return "error";	},
     First = function () { return "First"; },
     Second = function () { return "Second"; },
-    Three = function () { return "Three"; },
+	Third = function () { return "Third"; },
+	Fourth = function () { return "Fourth"; },
 	port = arguments("port"),
-	apiConfig = {
+    apiConfig = {
 		"": First,
 		"start": Second,
 		"test1": {
-			"test2": Three
+			"test2": Third,
+			"test3": {
+				"test4": Fourth,
+				"test6": {
+					"test7":"six"
+				}
+			}
 		},
-		"test3": {
+		"test5": {
 			name: "Влад"
 		  }
 	};
@@ -46,38 +53,48 @@ function startServer (req, res){
 	
 	if (pathname !== "/favicon.ico") {
 
-		let masUrl = parseUrl(req, pathname),
-			respons = checkObj(masUrl, apiConfig),
+		let masPath = parsePath(req, pathname),
+			respons = checkObj(masPath, apiConfig),
 			typeRespons = typeof(respons);
 
 		if (typeRespons === "function") {
 			res.writeHead(200, { "Content-Type": "text/plain" });
 			res.write(respons());
-			res.end();
-		} else if (typeRespons === "string"){
-			respons = JSON.stringify(respons);
+		} 
+		else {
 			res.writeHead(200, { "Content-Type": "application/json" });
 			res.write(respons);
-			res.end();
 		}
 	}
+	res.end();
 }
 
-function parseUrl(req, pathname) {	
-	let splitUrl = pathname.split("/");			
-		splitUrl.shift();	
-	return splitUrl;
+function parsePath(req, pathname) {	
+	let splitPath = pathname.split("/");			
+	    splitPath.shift();	
+	return splitPath;
 }
 
-function checkObj(masUrl, apiCon) {
-	let typeMasUrl = typeof(masUrl),
-		url = (typeMasUrl === "string") ? masUrl : masUrl[0],
-		respons = apiCon[url],
-		typeUrl = typeof(respons);
+function checkObj(masPath, apiCon) {
+	let typeMasPath = typeof(masPath),
+	    path = (typeMasPath === "string") ? masPath : masPath[0],
+	    respons = (typeMasPath === "string") ? apiCon : apiCon[path],
+	    typePath = typeof(respons),
+	    lengthMasPath = masPath.length;
 		
-	if (typeUrl === "object") {
+	if (typePath === "object") {
 		for (let key in respons) {
-			respons = checkObj(key, respons);
+			for (let i = 0; i < lengthMasPath; i++) {
+				if (key === masPath[i]) {
+					i++;
+					masPath.splice(0,i);
+					if (masPath.length !== 0) {
+						respons = checkObj(masPath, respons[key]);	
+					} else {
+						respons = respons[key];
+					}
+				}
+			}	
 		}
 	}
 	return respons;
