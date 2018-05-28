@@ -1,22 +1,17 @@
 let http = require("http"),
     url = require("url"),
-	First = function () { return "First"; },
-	//test = function () { return { "name": Second }; },
-	test = function () { return { "name": "asd" }; },
-    Second = function () { return "Second"; },
-    Third = function () { return "Third"; },
-    Fourth = function () { return "Fourth"; },
+	First = function () { return "First1"; },
+    Second = function () { return "Second1"; },
+    Third = function () { return "Third1"; },
+    Fourth = function () { return { "test": "test1" }; },
 	port = getPort(),
     apiConfig = {
 	    "": First,
-	    "start": test,
+	    "start": Second,
 	    "test1": {
 		    "test2": Third,
 		    "test3": {
 			    "test4": Fourth,
-			    "test6": {
-				    "test7": "Семь"
-			    }
 		    }
 	    }
 	};
@@ -40,96 +35,56 @@ function getPort() {
 	return result;
 }
 	
-http.createServer((req, res) => getCommonHandler(apiConfig, req, res)).listen(port);
+http.createServer(getCommonHandler(apiConfig)).listen(port);
 console.log("Server started on : ", port);
 
-function getCommonHandler(apiConfig, req, res) {	
-
-	let pathname = url.parse(req.url).pathname;
-
-	var handler = getHandler(apiConfig, parsePath(pathname)),
+function getCommonHandler(apiConfig) {	
+	return function (req, res) {
+	    let pathname = url.parse(req.url).pathname;
+	    handler = getHandler(apiConfig, parsePath(pathname)),
 	    result;
 
-	if (handler) {
-		result = handler;
-		if (typeof(result) === "function" && typeof(result()) !== "object") {
-			return writeResultInResponse(res, result, true);
-		}
+		if (handler) {
+			result = handler;
+			writeResultInResponse(res, result);
+		} 
 		else {
-			return writeResultInResponse(res, result, false);
+			writeNotFoundError(res);
 		}
-	} 
-	else {
-		return writeNotFoundError(res);
+		res.end();
 	}
 }
 
-function getHandler(apiConfig, pathNodes) {
-	let typeMasPath = typeof(pathNodes),
-	    path = (typeMasPath === "string") ? pathNodes : pathNodes[0],
-	    respons = (typeMasPath === "string") ? apiConfig : apiConfig[path],
-	    typePath = typeof(respons),
-		lengthMasPath = pathNodes.length;	
-		
-	if (typePath === "object") {
-		for (let key in respons) {
-			for (let i = 0; i < lengthMasPath; i++) {
-				if (key === pathNodes[i]) {
-					i++;
-					pathNodes.splice(0,i);
-					
-					if (pathNodes.length !== 0) {
-						
-						respons = getHandler(respons[key], pathNodes);	
-					} 
-					else {
-						respons = respons[key];
-					}
-				}
-			}	
-		}
+function getHandler(apiConfig, pathNodes, index) {	
+	index = index || 0;
+	let result = apiConfig[pathNodes[index]];	
+
+	if (typeof result === "object") {
+		result = getHandler(result, pathNodes, ++index);
 	}
-	return respons;
+
+	return result;
 }
 
-function writeResultInResponse(respons, result, flag) {
-	console.log(result);
+function writeResultInResponse(respons, result) {
+	let contentType;
 	
-	if (flag === true) {
-		respons.writeHead(200, { "Content-Type": "text/plain" });
-		respons.write(result());
-		respons.end();
+	if (typeof result() === "string") {
+		contentType = '"Content-Type": "text/plain"';
+		result = result();
 	}
-	else if (flag === false){
-		if (typeof(result) === "function") {
-			result = getResponsResult(result());
-			result = (typeof(result) !== "function") ? result : result();
-			result = JSON.stringify(result);		
-		}
-		else {
-			result = JSON.stringify(result);
-		}
-		respons.writeHead(200, { "Content-Type": "application/json" });
-		respons.write(result);
-		respons.end();
+	else {
+		contentType = '"Content-Type": "application/json"';
+		result = JSON.stringify(result());
 	}
-}
 
-function getResponsResult(res) {
-	let typeMasPath = typeof(res);
-		
-	if (typeMasPath === "object") {
-		for (let key in res) {
-			res = res[key];
-		}
-	}
-	return res;
+	respons.writeHead(200, { contentType })
+	respons.write(result);
 }
 
 function writeNotFoundError(respons) {
 	respons.writeHead(404, { "Content-Type": "text/plain" });
 	respons.write("Error: 404");
-	respons.end();
 }
 
 function parsePath(pathname) {	
