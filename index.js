@@ -14,7 +14,7 @@ let http = require("http"),
 			"test3": {
 				"test4": Fourth,
 				"test6": {
-					"test7":"six"
+					"test7": "six"
 				}
 			}
 		},
@@ -56,10 +56,15 @@ function startServer (req, res){
 		let masPath = parsePath(req, pathname),
 			respons = checkObj(masPath, apiConfig),
 			typeRespons = typeof(respons);
-
+			
 		if (typeRespons === "function") {
 			res.writeHead(200, { "Content-Type": "text/plain" });
 			res.write(respons());
+		} 
+		else if (typeRespons === "object"){
+			respons = JSON.stringify(respons);
+			res.writeHead(200, { "Content-Type": "application/json" });
+			res.write(respons);
 		} 
 		else {
 			res.writeHead(200, { "Content-Type": "application/json" });
