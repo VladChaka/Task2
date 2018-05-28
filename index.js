@@ -1,101 +1,88 @@
 let http = require("http"),
     url = require("url"),
-    func = function() { return "error";	},
-    First = function () { return "First"; },
+	First = function () { return "First"; },
+	//test = function () { return { "name": Second }; },
+	test = function () { return { "name": "asd" }; },
     Second = function () { return "Second"; },
-	Third = function () { return "Third"; },
-	Fourth = function () { return "Fourth"; },
-	port = arguments("port"),
+    Third = function () { return "Third"; },
+    Fourth = function () { return "Fourth"; },
+	port = getPort(),
     apiConfig = {
-		"": First,
-		"start": Second,
-		"test1": {
-			"test2": Third,
-			"test3": {
-				"test4": Fourth,
-				"test6": {
-					"test7": "six"
-				}
-			}
-		},
-		"test5": {
-			name: "Влад"
-		  }
+	    "": First,
+	    "start": test,
+	    "test1": {
+		    "test2": Third,
+		    "test3": {
+			    "test4": Fourth,
+			    "test6": {
+				    "test7": "Семь"
+			    }
+		    }
+	    }
 	};
 
-function arguments(argums) {
+function getPort() {
 	let result = null;
 	
 	for (let value in process.argv) {
 		value = process.argv[value]
-		let arg = value.split("="),
-			pref = arg[0];
-		
-		if (pref === "port" || pref === "Port") {
+		let arg = value.split("=", 2),
+		    pref = arg[0].toLowerCase();
+			
+		if (pref === "port") {
 			result = arg[1];
-			if (result === "") {
-				result = 8888;
-			}
 			break;
 		}	
 	}
-	if (result === null) {
+	if (result === null || result === "") {
 		result = 8888;
 	}
 	return result;
 }
 	
-http.createServer((req, res) => startServer(req, res)).listen(port);
+http.createServer((req, res) => getCommonHandler(apiConfig, req, res)).listen(port);
 console.log("Server started on : ", port);
 
-function startServer (req, res){
-	var pathname = url.parse(req.url, true).pathname;	
-	
-	if (pathname !== "/favicon.ico") {
+function getCommonHandler(apiConfig, req, res) {	
 
-		let masPath = parsePath(req, pathname),
-			respons = checkObj(masPath, apiConfig),
-			typeRespons = typeof(respons);
-			
-		if (typeRespons === "function") {
-			res.writeHead(200, { "Content-Type": "text/plain" });
-			res.write(respons());
-		} 
-		else if (typeRespons === "object"){
-			respons = JSON.stringify(respons);
-			res.writeHead(200, { "Content-Type": "application/json" });
-			res.write(respons);
-		} 
-		else {
-			res.writeHead(200, { "Content-Type": "application/json" });
-			res.write(respons);
+	let pathname = url.parse(req.url).pathname;
+
+	var handler = getHandler(apiConfig, parsePath(pathname)),
+	    result;
+
+	if (handler) {
+		result = handler;
+		if (typeof(result) === "function" && typeof(result()) !== "object") {
+			return writeResultInResponse(res, result, true);
 		}
+		else {
+			return writeResultInResponse(res, result, false);
+		}
+	} 
+	else {
+		return writeNotFoundError(res);
 	}
-	res.end();
 }
 
-function parsePath(req, pathname) {	
-	let splitPath = pathname.split("/");			
-	    splitPath.shift();	
-	return splitPath;
-}
-
-function checkObj(masPath, apiCon) {
-	let typeMasPath = typeof(masPath),
-	    path = (typeMasPath === "string") ? masPath : masPath[0],
-	    respons = (typeMasPath === "string") ? apiCon : apiCon[path],
+function getHandler(apiConfig, pathNodes) {
+	let typeMasPath = typeof(pathNodes),
+	    path = (typeMasPath === "string") ? pathNodes : pathNodes[0],
+	    respons = (typeMasPath === "string") ? apiConfig : apiConfig[path],
 	    typePath = typeof(respons),
-	    lengthMasPath = masPath.length;
+		lengthMasPath = pathNodes.length;	
 		
 	if (typePath === "object") {
 		for (let key in respons) {
 			for (let i = 0; i < lengthMasPath; i++) {
-				if (key === masPath[i]) {
+				if (key === pathNodes[i]) {
 					i++;
-					masPath.splice(0,i);
-					if (masPath.length !== 0) {
-						respons = checkObj(masPath, respons[key]);	
-					} else {
+					pathNodes.splice(0,i);
+					
+					if (pathNodes.length !== 0) {
+						
+						respons = getHandler(respons[key], pathNodes);	
+					} 
+					else {
 						respons = respons[key];
 					}
 				}
@@ -103,4 +90,50 @@ function checkObj(masPath, apiCon) {
 		}
 	}
 	return respons;
+}
+
+function writeResultInResponse(respons, result, flag) {
+	console.log(result);
+	
+	if (flag === true) {
+		respons.writeHead(200, { "Content-Type": "text/plain" });
+		respons.write(result());
+		respons.end();
+	}
+	else if (flag === false){
+		if (typeof(result) === "function") {
+			result = getResponsResult(result());
+			result = (typeof(result) !== "function") ? result : result();
+			result = JSON.stringify(result);		
+		}
+		else {
+			result = JSON.stringify(result);
+		}
+		respons.writeHead(200, { "Content-Type": "application/json" });
+		respons.write(result);
+		respons.end();
+	}
+}
+
+function getResponsResult(res) {
+	let typeMasPath = typeof(res);
+		
+	if (typeMasPath === "object") {
+		for (let key in res) {
+			res = res[key];
+		}
+	}
+	return res;
+}
+
+function writeNotFoundError(respons) {
+	respons.writeHead(404, { "Content-Type": "text/plain" });
+	respons.write("Error: 404");
+	respons.end();
+}
+
+function parsePath(pathname) {	
+	let splitPath = pathname.split("/");			
+	    splitPath.shift();	
+	return splitPath;
 }
