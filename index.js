@@ -1,5 +1,6 @@
 let http = require("http"),
-    url = require("url"),
+	url = require("url"),
+	LinkedList = require("./LinkedList"),
 	First = function () { return "First1"; },
     Second = function () { return { "test": "Second" }; },
 	Third = function () {  },
@@ -97,75 +98,7 @@ function parsePath(pathname) {
 	return splitPath;
 }
 
-
-
-
-class LinkedList {
-	constructor() {
-		this.head = null;
-		this.length = 0;
-	}
-
-	add(value) {
-		let newNode = { value };
-		newNode.next = this.head;
-		this.head = newNode;
-		this.length++;
-		return this;
-	}
-
-	remove(value) {		
-		if (this.length === 0) {
-			console.log("Fail. " + value + " undefined.");			
-			return undefined;
-		}
-
-		let thisNode = this.head,
-		    beforNode = thisNode.next;
-
-		if (thisNode.value === value) {
-			this.head = this.head.next;
-			this.length--;
-			return this;
-		}
-
-		for (let i = 0; i < this.length; i++) {
-			if (beforNode === null) {
-				console.log("Fail. " + value + " undefined.");			
-				return undefined;
-			}
-
-			if (beforNode.value === value) {
-				break;
-			}
-
-			thisNode = beforNode;
-			beforNode = beforNode.next;
-		}
-		
-		thisNode.next = beforNode.next;
-		this.length--;
-		console.log("Success. " + value + " removed.");
-		return this;
-	}
-
-	find(value) {
-		let thisNode = this.head;
-		for (let i = 0; i < this.length; i++) {
-			if (thisNode.value === value) {
-				console.log("Success. " + value + " found.");
-				return thisNode;
-			}
-			thisNode = thisNode.next;
-		}
-		console.log("Fail. " + value + " not found.");	
-		return thisNode;
-	}
-}
-
-
-
-let list = new LinkedList().add("Hello");
+let list = new LinkedList.list().add("Hello");
 console.log("0",list);
 list.add("World")
 console.log("1",list);
