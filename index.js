@@ -1,10 +1,12 @@
 let http = require("http"),
 	url = require("url"),
 	LinkedList = require("./LinkedList"),
+	list = new LinkedList(),
 	First = function () { return "First1"; },
     Second = function () { return { "test": "Second" }; },
 	Third = function () {  },
 	Fourth = function () { return { "test": "Fourth" }; },
+	viewList = function () { return list; },
 	port = getParam("port", 4001),
     apiConfig = {
 	    "": First,
@@ -14,7 +16,8 @@ let http = require("http"),
 		    "test3": {
 			    "test4": Fourth,
 		    }
-	    }
+		},
+		"list": viewList
 	};
 
 function getParam(key, value) {
@@ -39,9 +42,10 @@ console.log("Server started on : ", port);
 function getCommonHandler(apiConfig) {	
 	return function (req, res) {
 	    let pathname = url.parse(req.url).pathname,
-		handler = getHandler(apiConfig, parsePath(pathname));		
+		handler = getHandler(apiConfig, parsePath(pathname));	
 		
 		if (handler) {
+			addOnList(handler());
 			writeResultInResponse(res, handler);
 		} 
 		else {
@@ -98,18 +102,8 @@ function parsePath(pathname) {
 	return splitPath;
 }
 
-let list = new LinkedList.list().add("Hello");
-console.log("0",list);
-list.add("World")
-console.log("1",list);
-console.log(" ------------- ");
-list.find("asd");
-console.log(" ------------- ");
-list.find("Hello");
-console.log(" ------------- ");
-list.remove("Hello")
-console.log("2",list);
-console.log(" ------------- ");
-list.remove("WorldWorld")
-console.log("3",list);
-
+function addOnList(value) {
+	if (typeof value === "string") {
+		list.add(value);
+	}
+}
