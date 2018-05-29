@@ -40,7 +40,7 @@ console.log("Server started on : ", port);
 
 function getCommonHandler(apiConfig) {	
 	return function (req, res) {
-	    let pathname = url.parse(req.url).pathname;
+	    let pathname = url.parse(req.url).pathname,
 	    handler = getHandler(apiConfig, parsePath(pathname)),
 	    result;
 
@@ -57,12 +57,11 @@ function getCommonHandler(apiConfig) {
 
 function getHandler(apiConfig, pathNodes, index) {	
 	index = index || 0;
-	let result = apiConfig[pathNodes[index]];	
+	let result = apiConfig[pathNodes[index]];
 
 	if (typeof result === "object") {
 		result = getHandler(result, pathNodes, ++index);
 	}
-
 	return result;
 }
 
@@ -84,7 +83,7 @@ function writeResultInResponse(respons, result) {
 
 function writeNotFoundError(respons) {
 	respons.writeHead(404, { "Content-Type": "text/plain" });
-	respons.write("Error: 404");
+	respons.write("Error: 404. Page not found");
 }
 
 function parsePath(pathname) {	
