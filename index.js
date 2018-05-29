@@ -17,20 +17,18 @@ let http = require("http"),
 	};
 
 function getParam(key, value) {
-	let result = null;
+	let result = value;
 
-	for (let value in process.argv) {
-		value = process.argv[value];
-		let arg = value.split("=", 2),
-			pref = arg[0].toLowerCase();
-				
-		if (pref === key) {
-			result = arg[1];
-			break;
-		}
-	}
-		
-	result = (result === null || result === "") ? value : result;
+    for (let index in process.argv) {
+        let keyValue = process.argv[index].split("=", 2);
+        pref = keyValue[0].toLowerCase();
+
+        if (pref === key) {
+            result = keyValue[1];
+            break;
+        }
+    }
+
 	return result;
 }
 
@@ -75,16 +73,13 @@ function writeResultInResponse(respons, handler) {
 		result = "Error: 204. No Content.";
 		console.log("Error: 204. No Content.");
 	} 
-	else if (result !== undefined || result !== null) {
-		if (typeof result === "string") {
-			contentType = '"Content-Type": "text/plain"';
-			code = 200;
-		}
-		else {
-			contentType = '"Content-Type": "application/json"';
-			code = 200;
-			result = JSON.stringify(result);
-		}
+	else if (typeof result === "string") {
+		contentType = '"Content-Type": "text/plain"';
+		code = 200;
+	} else {
+		contentType = '"Content-Type": "application/json"';
+		code = 200;
+		result = JSON.stringify(result);
 	}
 	
 	respons.writeHead(code, { contentType })
