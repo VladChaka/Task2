@@ -101,7 +101,7 @@ function parsePath(pathname) {
 
 
 class LinkedList {
-	constructor(value) {
+	constructor() {
 		this.head = null;
 		this.length = 0;
 	}
@@ -116,36 +116,36 @@ class LinkedList {
 
 	remove(value) {		
 		if (this.length === 0) {
-			console.log("Fail " + value + " undefined");			
+			console.log("Fail. " + value + " undefined.");			
 			return undefined;
 		}
 
-		if (this.head.value === value) {
-			let value = this.head.value;
+		let thisNode = this.head,
+		    beforNode = thisNode.next;
+
+		if (thisNode.value === value) {
 			this.head = this.head.next;
 			this.length--;
 			return this;
 		}
 
-		let prNode = this.head;
-		let thisNode = prNode.next;
-
 		for (let i = 0; i < this.length; i++) {
-			if (thisNode === null) {
-				console.log("Fail " + value + " undefined");			
+			if (beforNode === null) {
+				console.log("Fail. " + value + " undefined.");			
 				return undefined;
 			}
 
-			if (thisNode.value === value) {
+			if (beforNode.value === value) {
 				break;
 			}
-			prNode = thisNode;
-			thisNode = thisNode.next;
-		}
 
-		prNode.next = thisNode.next;
+			thisNode = beforNode;
+			beforNode = beforNode.next;
+		}
+		
+		thisNode.next = beforNode.next;
 		this.length--;
-		console.log("Success " + value + " removed");
+		console.log("Success. " + value + " removed.");
 		return this;
 	}
 
@@ -153,12 +153,12 @@ class LinkedList {
 		let thisNode = this.head;
 		for (let i = 0; i < this.length; i++) {
 			if (thisNode.value === value) {
-				console.log("Success " + value + " found");
+				console.log("Success. " + value + " found.");
 				return thisNode;
 			}
 			thisNode = thisNode.next;
 		}
-		console.log("Fail " + value + " not found");	
+		console.log("Fail. " + value + " not found.");	
 		return thisNode;
 	}
 }
@@ -166,7 +166,7 @@ class LinkedList {
 
 
 let list = new LinkedList().add("Hello");
-console.log(list);
+console.log("0",list);
 list.add("World")
 console.log("1",list);
 console.log(" ------------- ");
@@ -174,7 +174,7 @@ list.find("asd");
 console.log(" ------------- ");
 list.find("Hello");
 console.log(" ------------- ");
-list.remove("World")
+list.remove("Hello")
 console.log("2",list);
 console.log(" ------------- ");
 list.remove("WorldWorld")
