@@ -1,9 +1,9 @@
 let http = require("http"),
     url = require("url"),
 	First = function () { return "First1"; },
-    Second = function () { return "Second1"; },
+    Second = function () { return { "test": "Second" }; },
     Third = function () { return "Third1"; },
-    Fourth = function () { return { "test": "test1" }; },
+    Fourth = function () { return { "test": "Fourth" }; },
 	port = getPort(),
     apiConfig = {
 	    "": First,
