@@ -16,22 +16,24 @@ let http = require("http"),
 	    }
 	};
 
-function getPort() {
+function getPort(argument) {
 	let result = null;
-	
-	for (let value in process.argv) {
-		value = process.argv[value]
-		let arg = value.split("=", 2),
-		    pref = arg[0].toLowerCase();
-			
-		if (pref === "port") {
-			result = arg[1];
-			break;
-		}	
+	argument = argument || 8888;
+
+	if (typeof argument === "string") {
+		for (let value in process.argv) {
+			value = process.argv[value]
+			let arg = value.split("=", 2),
+				pref = arg[0].toLowerCase();
+				
+			if (pref === argument) {
+				result = arg[1];8888
+				break;
+			}
+		}
 	}
-	if (result === null || result === "") {
-		result = 8888;
-	}
+
+	result = (result === null || result === "") ? argument : result;
 	return result;
 }
 	
@@ -41,12 +43,10 @@ console.log("Server started on : ", port);
 function getCommonHandler(apiConfig) {	
 	return function (req, res) {
 	    let pathname = url.parse(req.url).pathname,
-	    handler = getHandler(apiConfig, parsePath(pathname)),
-	    result;
+	    handler = getHandler(apiConfig, parsePath(pathname));
 
 		if (handler) {
-			result = handler;
-			writeResultInResponse(res, result);
+			writeResultInResponse(res, handler);
 		} 
 		else {
 			writeNotFoundError(res);
@@ -65,16 +65,16 @@ function getHandler(apiConfig, pathNodes, index) {
 	return result;
 }
 
-function writeResultInResponse(respons, result) {
-	let contentType;
+function writeResultInResponse(respons, handler) {
+	let contentType,
+	    result = handler();
 	
-	if (typeof result() === "string") {
+	if (typeof result === "string") {
 		contentType = '"Content-Type": "text/plain"';
-		result = result();
 	}
 	else {
 		contentType = '"Content-Type": "application/json"';
-		result = JSON.stringify(result());
+		result = JSON.stringify(result);
 	}
 
 	respons.writeHead(200, { contentType })
