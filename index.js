@@ -51,13 +51,14 @@ function getCommonHandler(apiConfig) {
 		else {
 			writeNotFoundError(res);
 		}
+		
 		res.end();
 	}
 }
 
 function getHandler(apiConfig, pathNodes, index) {	
-	index = index || 0;
 	let result = apiConfig[pathNodes[index]];
+	    index = index || 0;   
 
 	if (typeof result === "object") {
 		result = getHandler(result, pathNodes, ++index);
@@ -83,11 +84,11 @@ function writeResultInResponse(respons, handler) {
 
 function writeNotFoundError(respons) {
 	respons.writeHead(404, { "Content-Type": "text/plain" });
-	respons.write("Error: 404. Page not found");
+	respons.write("Error: 404. Page not found.");
 }
 
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
-	    splitPath.shift();	
+		splitPath.shift();	
 	return splitPath;
 }
