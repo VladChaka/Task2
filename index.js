@@ -96,3 +96,87 @@ function parsePath(pathname) {
 		splitPath.shift();	
 	return splitPath;
 }
+
+
+
+
+class LinkedList {
+	constructor(value) {
+		this.head = null;
+		this.length = 0;
+	}
+
+	add(value) {
+		let newNode = { value };
+		newNode.next = this.head;
+		this.head = newNode;
+		this.length++;
+		return this;
+	}
+
+	remove(value) {		
+		if (this.length === 0) {
+			console.log("Fail " + value + " undefined");			
+			return undefined;
+		}
+
+		if (this.head.value === value) {
+			let value = this.head.value;
+			this.head = this.head.next;
+			this.length--;
+			return this;
+		}
+
+		let prNode = this.head;
+		let thisNode = prNode.next;
+
+		for (let i = 0; i < this.length; i++) {
+			if (thisNode === null) {
+				console.log("Fail " + value + " undefined");			
+				return undefined;
+			}
+
+			if (thisNode.value === value) {
+				break;
+			}
+			prNode = thisNode;
+			thisNode = thisNode.next;
+		}
+
+		prNode.next = thisNode.next;
+		this.length--;
+		console.log("Success " + value + " removed");
+		return this;
+	}
+
+	find(value) {
+		let thisNode = this.head;
+		for (let i = 0; i < this.length; i++) {
+			if (thisNode.value === value) {
+				console.log("Success " + value + " found");
+				return thisNode;
+			}
+			thisNode = thisNode.next;
+		}
+		console.log("Fail " + value + " not found");	
+		return thisNode;
+	}
+}
+
+
+
+let list = new LinkedList().add("Hello");
+console.log(list);
+list.add("World")
+console.log("1",list);
+console.log(" ------------- ");
+list.find("asd");
+console.log(" ------------- ");
+list.find("Hello");
+console.log(" ------------- ");
+list.remove("World")
+console.log("2",list);
+console.log(" ------------- ");
+list.remove("WorldWorld")
+console.log("3",list);
+
