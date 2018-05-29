@@ -4,7 +4,7 @@ let http = require("http"),
     Second = function () { return { "test": "Second" }; },
     Third = function () { return "Third1"; },
     Fourth = function () { return { "test": "Fourth" }; },
-	port = getPort(),
+	port = getPort(1234),
     apiConfig = {
 	    "": First,
 	    "start": Second,
@@ -18,7 +18,7 @@ let http = require("http"),
 
 function getPort(argument) {
 	let result = null;
-	argument = argument || 8888;
+	    argument = argument || 8888;
 
 	if (typeof argument === "string") {
 		for (let value in process.argv) {
@@ -27,7 +27,7 @@ function getPort(argument) {
 				pref = arg[0].toLowerCase();
 				
 			if (pref === argument) {
-				result = arg[1];8888
+				result = arg[1];
 				break;
 			}
 		}
@@ -43,8 +43,8 @@ console.log("Server started on : ", port);
 function getCommonHandler(apiConfig) {	
 	return function (req, res) {
 	    let pathname = url.parse(req.url).pathname,
-	    handler = getHandler(apiConfig, parsePath(pathname));
-
+		handler = getHandler(apiConfig, parsePath(pathname));
+		
 		if (handler) {
 			writeResultInResponse(res, handler);
 		} 
@@ -57,18 +57,20 @@ function getCommonHandler(apiConfig) {
 }
 
 function getHandler(apiConfig, pathNodes, index) {	
+	    index = index || 0;
 	let result = apiConfig[pathNodes[index]];
-	    index = index || 0;   
+	       
 
 	if (typeof result === "object") {
 		result = getHandler(result, pathNodes, ++index);
 	}
+	
 	return result;
 }
 
 function writeResultInResponse(respons, handler) {
 	let contentType,
-	    result = handler();
+		result = handler();		
 	
 	if (typeof result === "string") {
 		contentType = '"Content-Type": "text/plain"';
