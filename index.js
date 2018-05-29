@@ -2,9 +2,9 @@ let http = require("http"),
     url = require("url"),
 	First = function () { return "First1"; },
     Second = function () { return { "test": "Second" }; },
-    Third = function () { return "Third1"; },
-    Fourth = function () { return { "test": "Fourth" }; },
-	port = getPort(1234),
+	Third = function () {  },
+	Fourth = function () { return { "test": "Fourth" }; },
+	port = getParam("port", 4001),
     apiConfig = {
 	    "": First,
 	    "start": Second,
@@ -16,34 +16,31 @@ let http = require("http"),
 	    }
 	};
 
-function getPort(argument) {
+function getParam(key, value) {
 	let result = null;
-	    argument = argument || 8888;
 
-	if (typeof argument === "string") {
-		for (let value in process.argv) {
-			value = process.argv[value]
-			let arg = value.split("=", 2),
-				pref = arg[0].toLowerCase();
+	for (let value in process.argv) {
+		value = process.argv[value];
+		let arg = value.split("=", 2),
+			pref = arg[0].toLowerCase();
 				
-			if (pref === argument) {
-				result = arg[1];
-				break;
-			}
+		if (pref === key) {
+			result = arg[1];
+			break;
 		}
 	}
-
-	result = (result === null || result === "") ? argument : result;
+		
+	result = (result === null || result === "") ? value : result;
 	return result;
 }
-	
+
 http.createServer(getCommonHandler(apiConfig)).listen(port);
 console.log("Server started on : ", port);
 
 function getCommonHandler(apiConfig) {	
 	return function (req, res) {
 	    let pathname = url.parse(req.url).pathname,
-		handler = getHandler(apiConfig, parsePath(pathname));
+		handler = getHandler(apiConfig, parsePath(pathname));		
 		
 		if (handler) {
 			writeResultInResponse(res, handler);
@@ -59,7 +56,6 @@ function getCommonHandler(apiConfig) {
 function getHandler(apiConfig, pathNodes, index) {	
 	    index = index || 0;
 	let result = apiConfig[pathNodes[index]];
-	       
 
 	if (typeof result === "object") {
 		result = getHandler(result, pathNodes, ++index);
@@ -70,17 +66,28 @@ function getHandler(apiConfig, pathNodes, index) {
 
 function writeResultInResponse(respons, handler) {
 	let contentType,
-		result = handler();		
-	
-	if (typeof result === "string") {
-		contentType = '"Content-Type": "text/plain"';
-	}
-	else {
-		contentType = '"Content-Type": "application/json"';
-		result = JSON.stringify(result);
-	}
+	    code,
+		result = handler();	
 
-	respons.writeHead(200, { contentType })
+	if (result === undefined || result === null) {
+		contentType= '"Content-Type": "text/plain"';
+		code = 204;
+		result = "Error: 204. No Content.";
+		console.log("Error: 204. No Content.");
+	} 
+	else if (result !== undefined || result !== null) {
+		if (typeof result === "string") {
+			contentType = '"Content-Type": "text/plain"';
+			code = 200;
+		}
+		else {
+			contentType = '"Content-Type": "application/json"';
+			code = 200;
+			result = JSON.stringify(result);
+		}
+	}
+	
+	respons.writeHead(code, { contentType })
 	respons.write(result);
 }
 
