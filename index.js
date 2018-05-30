@@ -13,7 +13,7 @@ let http = require("http"),
 	    "test1": {
 	        "test2": Third,
 	    },
-		"list": LinkedList.view
+	    "list": LinkedList.view
     };
 
 http.createServer(getCommonHandler(apiConfig)).listen(port);
