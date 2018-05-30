@@ -45,7 +45,7 @@ function getCommonHandler(apiConfig) {
 		handler = getHandler(apiConfig, parsePath(pathname));	
 		
 		if (handler) {
-			addOnList(handler());
+			addOnList(pathname);
 			writeResultInResponse(res, handler);
 		} 
 		else {
@@ -103,7 +103,8 @@ function parsePath(pathname) {
 }
 
 function addOnList(value) {
-	if (typeof value === "string") {
+	let find = list.find(value);
+	if (find !== "Success") {
 		list.add(value);
 	}
 }

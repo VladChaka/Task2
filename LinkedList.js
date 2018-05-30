@@ -52,12 +52,12 @@ let LinkedList = class {
 		for (let i = 0; i < this.length; i++) {
 			if (thisNode.value === value) {
 				console.log("Success. " + value + " found.");
-				return thisNode;
+				return "Success";
 			}
 			thisNode = thisNode.next;
 		}
 		console.log("Fail. " + value + " not found.");	
-		return thisNode;
+		return "Fail";
 	}
 }
 
