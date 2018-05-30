@@ -3,10 +3,18 @@ let LinkedList = require("./LinkedList"),
     Success = "Success! ",
     Fail = "Fail! ";
 
-class service extends LinkedList {
+
+class DataService {
+	
+	constructor(LinkedList) {
+		this.add = LinkedList.addOnList;
+		this.remove = LinkedList.removeFromList;
+		this.find = LinkedList.findInList;
+		this.view = LinkedList;
+	}
 
 	add(value){
-		super.addOnList(value)
+		this.ad(value);
 	}
 	
 	remove(value) {
@@ -33,8 +41,10 @@ class service extends LinkedList {
 	}
 
 	viewList() { 
-		return this; 
+		console.log("123",this.view);
+		console.log("1233",LinkedList);
+		LinkedList;
 	}
 }
 
-module.exports = new service();
+module.exports = new DataService(LinkedList);

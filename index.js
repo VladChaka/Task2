@@ -1,4 +1,5 @@
 let http = require("http"),
+    serviceData = require("./List/LinkedList"),
 	getCommonHandler = require("./handler/serverHandler"),
 	getParam = require("./util"),
     port = getParam("port", 4001),
@@ -11,7 +12,7 @@ let http = require("http"),
 	    "test1": {
 	        "test2": Third,
 	    },
-		"list": ""
+		"list": serviceData.viewList
 	};
 
 http.createServer(getCommonHandler(apiConfig)).listen(port);

@@ -7,33 +7,28 @@ function parsePath(pathname) {
 }
 
 function getHandler(apiConfig, pathNodes, index) {
-    index = index || 0;
-    let result = apiConfig[pathNodes[index]];
-
-    if (typeof result === "object") {
-        result = getHandler(result, pathNodes, ++index);
-    }
+	index = index || 0;
+	let result = apiConfig[pathNodes[index]];
+	if (pathNodes[0] !== "list") {
+		if (typeof result === "object") {
+			result = getHandler(result, pathNodes, ++index);
+		}
+	}
+	console.log(result);
 	
     return result;
 }
 
-// function writeResultOperationOnList(respons, path) {
-// 	let value = path[1];
-
-// 	if (path[0] === "remove") {
-// 		result = serviceData.remove(value);
-// 	} else if (path[0] === "find") {
-// 		result = serviceData.find(value);
-// 	}
-	
-// 	respons.writeHead(200, { "Content-Type": "text/plain" })
-// 	respons.write(result);
-// }
-
 function writeResultInResponse(respons, handler) {
 	let contentType,
 	    code = 200,
-		result = (handler !== "list") ? handler() : serviceData.viewList();			
+		//result = (handler !== "list") ? handler() : serviceData.viewList();			
+		result = (typeof handler === "object")? handler : handler();	
+		
+		console.log(serviceData.viewList());
+		console.log(handler);
+		
+		
 
 	if (result === undefined || result === null) {
 		contentType= '"Content-Type": "text/plain"';
@@ -60,6 +55,5 @@ function writeNotFoundError(respons) {
 
 module.exports.parsePath = parsePath;
 module.exports.get = getHandler;
-//module.exports.writeResultOperation = writeResultOperationOnList;
 module.exports.writeResult = writeResultInResponse;
 module.exports.writeError = writeNotFoundError;

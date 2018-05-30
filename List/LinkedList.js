@@ -60,4 +60,4 @@ let LinkedList = class {
 	}
 }
 
-module.exports = LinkedList;
+module.exports = new LinkedList();
