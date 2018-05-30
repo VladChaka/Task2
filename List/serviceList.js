@@ -1,20 +1,40 @@
 let LinkedList = require("./LinkedList"),
-    viewList = function () { return list; },
-	list = new LinkedList();
+    result,
+    Success = "Success! ",
+    Fail = "Fail! ";
 
-function addOnList(countRquest) {
-	list.add(countRquest);
+class service extends LinkedList {
+
+	add(value){
+		super.addOnList(value)
+	}
+	
+	remove(value) {
+		result = super.removeFromList(value);
+	
+		if (result === Success) {
+			result = Success + value + " removed.";
+		} else {
+			result = Fail + value + " undefined.";
+		}
+		return result;
+	}
+	
+	find(value) {
+		result = super.findInList(value);
+	
+		if (result === Success) {
+			result = Success + value + " found.";
+		} else {
+			result = Fail + value + " not found.";
+		}
+	
+		return result;
+	}
+
+	viewList() { 
+		return this; 
+	}
 }
 
-function remove(value) {
-	return list.remove(value);
-}
-
-function findOnList(value) {
-	return list.find(value);
-}
-
-module.exports.add = addOnList;
-module.exports.remove = remove;
-module.exports.find = findOnList;
-module.exports.view = viewList;
+module.exports = new service();

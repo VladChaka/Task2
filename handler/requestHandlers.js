@@ -1,4 +1,4 @@
-let LinkedList = require("./List/serviceList");
+let serviceData = require("../List/serviceList");
 
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
@@ -13,42 +13,27 @@ function getHandler(apiConfig, pathNodes, index) {
     if (typeof result === "object") {
         result = getHandler(result, pathNodes, ++index);
     }
-
+	
     return result;
 }
 
-function writeResultOperationOnList(respons, value, operation) {
-	let result,
-		Success = "Success! " + value,
-		Fail = "Fail! " + value;
+// function writeResultOperationOnList(respons, path) {
+// 	let value = path[1];
 
-	if (operation === "remove") {
-		result = LinkedList.remove(value);
-
-		if (result === "Success") {
-			result = Success + " removed.";
-		} else {
-			result = Fail + " undefined.";
-		}
-	} 
-	else if (operation === "find") {
-		result = LinkedList.find(value);
-
-		if (result === "Success") {
-			result = Success + " found.";
-		} else {
-			result = Fail + " not found.";
-		}
-	}
+// 	if (path[0] === "remove") {
+// 		result = serviceData.remove(value);
+// 	} else if (path[0] === "find") {
+// 		result = serviceData.find(value);
+// 	}
 	
-	respons.writeHead(200, { "Content-Type": "text/plain" })
-	respons.write(result);
-}
+// 	respons.writeHead(200, { "Content-Type": "text/plain" })
+// 	respons.write(result);
+// }
 
 function writeResultInResponse(respons, handler) {
 	let contentType,
 	    code = 200,
-		result = handler();	
+		result = (handler !== "list") ? handler() : serviceData.viewList();			
 
 	if (result === undefined || result === null) {
 		contentType= '"Content-Type": "text/plain"';
@@ -75,6 +60,6 @@ function writeNotFoundError(respons) {
 
 module.exports.parsePath = parsePath;
 module.exports.get = getHandler;
-module.exports.writeResultOperation = writeResultOperationOnList;
+//module.exports.writeResultOperation = writeResultOperationOnList;
 module.exports.writeResult = writeResultInResponse;
 module.exports.writeError = writeNotFoundError;

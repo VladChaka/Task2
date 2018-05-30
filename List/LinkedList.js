@@ -4,14 +4,14 @@ let LinkedList = class {
 		this.length = 0;
 	}
 
-	add(value) {
+	addOnList(value) {
 		let newNode = { value };
 		newNode.next = this.head;
 		this.head = newNode;
 		this.length++;
 	}
 
-	remove(value) {		
+	removeFromList(value) {		
 		if (this.length === 0) {
 			console.log("Fail. " + value + " undefined.");						
 			return "Fail";
@@ -46,7 +46,7 @@ let LinkedList = class {
 		return "Success";
 	}
 
-	find(value) {
+	findInList(value) {
 		let thisNode = this.head;
 		for (let i = 0; i < this.length; i++) {
 			if (thisNode.value === value) {
