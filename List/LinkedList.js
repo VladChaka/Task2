@@ -9,17 +9,16 @@ let LinkedList = class {
 		newNode.next = this.head;
 		this.head = newNode;
 		this.length++;
-		return this;
 	}
 
 	remove(value) {		
 		if (this.length === 0) {
-			console.log("Fail. " + value + " undefined.");			
-			return undefined;
+			console.log("Fail. " + value + " undefined.");						
+			return "Fail";
 		}
 
 		let thisNode = this.head,
-		    beforNode = thisNode.next;
+			beforNode = thisNode.next;
 
 		if (thisNode.value === value) {
 			this.head = this.head.next;
@@ -30,7 +29,7 @@ let LinkedList = class {
 		for (let i = 0; i < this.length; i++) {
 			if (beforNode === null) {
 				console.log("Fail. " + value + " undefined.");			
-				return undefined;
+				return "Fail";
 			}
 
 			if (beforNode.value === value) {
@@ -44,7 +43,7 @@ let LinkedList = class {
 		thisNode.next = beforNode.next;
 		this.length--;
 		console.log("Success. " + value + " removed.");
-		return this;
+		return "Success";
 	}
 
 	find(value) {

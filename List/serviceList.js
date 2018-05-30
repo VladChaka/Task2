@@ -1,24 +1,20 @@
 let LinkedList = require("./LinkedList"),
     viewList = function () { return list; },
-    list = new LinkedList();
+	list = new LinkedList();
 
-function addOnList(value) {
-	let find = list.find(value);
-	if (find !== "Success") {
-		list.add(value);
-	}
+function addOnList(countRquest) {
+	list.add(countRquest);
 }
 
-function removeOnList(value) {
-	list.remove(value);
+function remove(value) {
+	return list.remove(value);
 }
 
 function findOnList(value) {
-	let result = list.find(value);
-	return result;
+	return list.find(value);
 }
 
 module.exports.add = addOnList;
-module.exports.remove = removeOnList;
+module.exports.remove = remove;
 module.exports.find = findOnList;
 module.exports.view = viewList;

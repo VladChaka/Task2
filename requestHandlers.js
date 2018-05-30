@@ -1,3 +1,5 @@
+let LinkedList = require("./List/serviceList");
+
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
 		splitPath.shift();	
@@ -15,9 +17,37 @@ function getHandler(apiConfig, pathNodes, index) {
     return result;
 }
 
+function writeResultOperationOnList(respons, value, operation) {
+	let result,
+		Success = "Success! " + value,
+		Fail = "Fail! " + value;
+
+	if (operation === "remove") {
+		result = LinkedList.remove(value);
+
+		if (result === "Success") {
+			result = Success + " removed.";
+		} else {
+			result = Fail + " undefined.";
+		}
+	} 
+	else if (operation === "find") {
+		result = LinkedList.find(value);
+
+		if (result === "Success") {
+			result = Success + " found.";
+		} else {
+			result = Fail + " not found.";
+		}
+	}
+	
+	respons.writeHead(200, { "Content-Type": "text/plain" })
+	respons.write(result);
+}
+
 function writeResultInResponse(respons, handler) {
 	let contentType,
-	    code,
+	    code = 200,
 		result = handler();	
 
 	if (result === undefined || result === null) {
@@ -28,10 +58,8 @@ function writeResultInResponse(respons, handler) {
 	} 
 	else if (typeof result === "string") {
 		contentType = '"Content-Type": "text/plain"';
-		code = 200;
 	} else {
 		contentType = '"Content-Type": "application/json"';
-		code = 200;
 		result = JSON.stringify(result);
 	}
 	
@@ -47,5 +75,6 @@ function writeNotFoundError(respons) {
 
 module.exports.parsePath = parsePath;
 module.exports.get = getHandler;
+module.exports.writeResultOperation = writeResultOperationOnList;
 module.exports.writeResult = writeResultInResponse;
 module.exports.writeError = writeNotFoundError;
