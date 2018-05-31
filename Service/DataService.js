@@ -9,20 +9,18 @@ module.exports = class DataService {
 
 	add(){	
 		++number;
-		this.list.addOnList("" + number + "");
+		this.list.addOnList(`${number}`);
 
-		return result = "Success" + "! " + number + " added.";
+		return result = `Success" + "! ${number} added.`;
 	}
 	
 	remove() {
 		result = this.list.removeFromList("" + number + "");
-		console.log(result);
-		
-	
+
 		if (result === "Success") {
-			result = "Success" + "! " + number + " removed.";
+			result = `Success" + "! ${number} removed.`;
 		} else {
-			result = "Fail! " + number + " undefined.";
+			result = `Fail" + "! ${number} undefined.`;
 		}
 		return result;
 	}
@@ -31,9 +29,9 @@ module.exports = class DataService {
 		result = this.list.findInList("" + number + "");
 	
 		if (result === "Success") {
-			result = "Success" + "! " + number + " found.";
+			result = `Success" + "! ${number} found.`;
 		} else {
-			result = "Fail! " + number + " not found.";
+			result = `Fail" + "! ${number} not found.`;
 		}
 	
 		return result;
