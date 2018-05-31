@@ -15,7 +15,7 @@ module.exports = class DataService {
 	}
 	
 	remove() {
-		result = this.list.removeFromList("" + number + "");
+		result = this.list.removeFromList(`${number}`);
 
 		if (result === "Success") {
 			result = `Success" + "! ${number} removed.`;
@@ -26,7 +26,7 @@ module.exports = class DataService {
 	}
 	
 	find() {
-		result = this.list.findInList("" + number + "");
+		result = this.list.findInList(`${number}`);
 	
 		if (result === "Success") {
 			result = `Success" + "! ${number} found.`;
