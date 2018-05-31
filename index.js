@@ -15,4 +15,5 @@ let http = require("http"),
 	};	
 	
 http.createServer(getCommonHandler(apiConfig)).listen(port);
-console.log("Server started on " + port + " port");
+
+console.log(`Server started on ${port} port.`);
