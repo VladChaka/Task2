@@ -1,4 +1,20 @@
-let serviceData = require("../List/serviceList");
+let url = require("url");
+
+module.exports = function getCommonHandler(apiConfig) {	
+	return function (req, res) {
+		let pathname = url.parse(req.url).pathname,
+            path = parsePath(pathname);
+
+		handler = getHandler(apiConfig, path);	
+
+		if (handler) {	
+            writeResultInResponse(res, handler);
+		} else {
+			writeNotFoundError(res);
+		}
+		res.end();
+	}
+}
 
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
@@ -9,32 +25,20 @@ function parsePath(pathname) {
 function getHandler(apiConfig, pathNodes, index) {
 	index = index || 0;
 	let result = apiConfig[pathNodes[index]];
-
 	if (pathNodes[0] !== "list") {
+		
 		if (typeof result === "object") {
 			result = getHandler(result, pathNodes, ++index);
 		}
-	}
+	} 
 	
     return result;
-}
-
-function writeResultOperationOnList(respons, path) {
-	let value = path[1];
-	if (path[0] === "remove") {
-			result = serviceData.remove(value);
-	} else if (path[0] === "find") {
-	   result = serviceData.find(value);
-   }
-			
-   respons.writeHead(200, { "Content-Type": "text/plain" })
-   respons.write(result);
 }
 
 function writeResultInResponse(respons, handler) {
 	let contentType,
 	    code = 200,
-		result = handler();	
+		result = (typeof handler === "object") ? handler : handler();	
 
 	if (result === undefined || result === null) {
 		contentType= '"Content-Type": "text/plain"';
@@ -57,10 +61,3 @@ function writeNotFoundError(respons) {
 	respons.writeHead(404, { "Content-Type": "text/plain" });
 	respons.write("Error: 404. Page not found.");
 }
-
-
-module.exports.parsePath = parsePath;
-module.exports.get = getHandler;
-module.exports.writeResultOperation = writeResultOperationOnList;
-module.exports.writeResult = writeResultInResponse;
-module.exports.writeError = writeNotFoundError;
