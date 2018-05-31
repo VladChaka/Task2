@@ -1,6 +1,6 @@
 let LinkedList = require("./LinkedList"),
     result,
-    Success = "Success! ",
+    Success = "Success",
     Fail = "Fail! ";
 
 
@@ -17,8 +17,8 @@ class DataService {
 	remove(value) {
 		result = this.list.removeFromList(value);
 	
-		if (result === "Success") {
-			result = Success + value + " removed.";
+		if (result === Success) {
+			result = Success + "! " + value + " removed.";
 		} else {
 			result = Fail + value + " undefined.";
 		}
@@ -28,8 +28,8 @@ class DataService {
 	find(value) {
 		result = this.list.findInList(value);
 	
-		if (result === "Success") {
-			result = Success + value + " found.";
+		if (result === Success) {
+			result = Success + "! " + value + " found.";
 		} else {
 			result = Fail + value + " not found.";
 		}
