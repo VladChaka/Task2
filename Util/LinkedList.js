@@ -14,7 +14,7 @@ module.exports =  class LinkedList {
 	removeFromList(value) {	
 			
 		if (this.length === 0) {
-			console.log(`Fail" + "! ${value} undefined.`);						
+			console.log(`Fail! ${value} undefined.`);						
 			return "Fail";
 		}
 
@@ -29,7 +29,7 @@ module.exports =  class LinkedList {
  
 		for (let i = 0; i < this.length; i++) {
 			if (beforNode === null) {
-				console.log(`Fail" + "! ${value} undefined.`);			
+				console.log(`Fail! ${value} undefined.`);			
 				return "Fail";
 			}
 
@@ -43,7 +43,7 @@ module.exports =  class LinkedList {
 		
 		thisNode.next = beforNode.next;
 		this.length--;
-		console.log(`Success" + "! ${value} removed.`);
+		console.log(`Success! ${value} removed.`);
 		return "Success";
 	}
 	
@@ -51,12 +51,12 @@ module.exports =  class LinkedList {
 		let thisNode = this.head;
 		for (let i = 0; i < this.length; i++) {
 			if (thisNode.value === value) {
-				console.log(`Success" + "! ${value} found.`);
+				console.log(`Success! ${value} found.`);
 				return "Success";
 			}
 			thisNode = thisNode.next;
 		}
-		console.log(`Fail" + "! ${value} not found.`);	
+		console.log(`Fail! ${value} not found.`);	
 		return "Fail";
 	}
 }

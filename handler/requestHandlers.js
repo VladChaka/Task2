@@ -1,30 +1,6 @@
-let url = require("url"),
-    LinkedList = require("../Util/LinkedList"),
+let LinkedList = require("../Util/LinkedList"),
     DataService = require("../Service/DataService"),
     DataServiceFirst = new DataService(LinkedList);
-
-function getCommonHandler(apiConfig) {	
-	return function (req, res) {
-		let pathname = url.parse(req.url).pathname,
-            path = parsePath(pathname);
-
-		handler = getHandler(apiConfig, path);	
-
-		if (handler) {				
-			if (path.length > 1 && path[0] === "list") {
-				// path[1] = "remove:value" of "find:value"
-				path = path[1].split(":",2);
-				writeResultOperationOnList(res, path);
-				          
-			} else {
-				writeResultInResponse(res, handler);
-			} 
-		} else {
-			writeNotFoundError(res);
-		}
-		res.end();
-	}
-}
 
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
@@ -48,14 +24,15 @@ function getHandler(apiConfig, pathNodes, index) {
 function writeResultOperationOnList(respons, path) {
 	let value = path[1],
 	    result;
-	if (path[0] === "remove") {
+	if (path === "remove") {
 		result = DataServiceFirst.remove();
-	} else if (path[0] === "find") {
+	} else if (path === "find") {
 	    result = DataServiceFirst.find();
-    } else if (path[0] === "add") {
+    } else if (path === "add") {
 		result = DataServiceFirst.add();
+	} else {
+		return writeNotFoundError(respons);
 	}
-			console.log(result);
 			
     respons.writeHead(200, { "Content-Type": "text/plain" })
     respons.write(result);
@@ -91,5 +68,9 @@ function writeNotFoundError(respons) {
 	respons.write("Error: 404. Page not found.");
 }
 
-module.exports.server = getCommonHandler;
+module.exports.parsePath = parsePath;
+module.exports.getHandler = getHandler; 
+module.exports.writeResultOperationOnList = writeResultOperationOnList; 
+module.exports.writeResultInResponse = writeResultInResponse; 
+module.exports.writeNotFoundError = writeNotFoundError; 
 module.exports.DataServiceFirst = DataServiceFirst; 

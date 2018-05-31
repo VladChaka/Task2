@@ -1,6 +1,6 @@
 let http = require("http"),
 	handler = require("./handler/requestHandlers"),
-	getCommonHandler = handler.server,
+	getCommonHandler = require("./Server"),
 	DataService = handler.DataServiceFirst,
     getParam = require("./Util/common"),
     port = getParam("port", 4001),
