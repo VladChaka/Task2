@@ -14,24 +14,26 @@ module.exports = class DataService {
 		return result = "Success" + "! " + number + " added.";
 	}
 	
-	remove(value) {
-		result = this.list.removeFromList(value);
+	remove() {
+		result = this.list.removeFromList("" + number + "");
+		console.log(result);
+		
 	
 		if (result === "Success") {
-			result = "Success" + "! " + value + " removed.";
+			result = "Success" + "! " + number + " removed.";
 		} else {
-			result = "Fail! " + value + " undefined.";
+			result = "Fail! " + number + " undefined.";
 		}
 		return result;
 	}
 	
-	find(value) {
-		result = this.list.findInList(value);
+	find() {
+		result = this.list.findInList("" + number + "");
 	
 		if (result === "Success") {
-			result = "Success" + "! " + value + " found.";
+			result = "Success" + "! " + number + " found.";
 		} else {
-			result = "Fail! " + value + " not found.";
+			result = "Fail! " + number + " not found.";
 		}
 	
 		return result;

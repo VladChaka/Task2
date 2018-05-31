@@ -49,12 +49,13 @@ function writeResultOperationOnList(respons, path) {
 	let value = path[1],
 	    result;
 	if (path[0] === "remove") {
-		result = DataServiceFirst.remove(value);
+		result = DataServiceFirst.remove();
 	} else if (path[0] === "find") {
-	    result = DataServiceFirst.find(value);
+	    result = DataServiceFirst.find();
     } else if (path[0] === "add") {
 		result = DataServiceFirst.add();
 	}
+			console.log(result);
 			
     respons.writeHead(200, { "Content-Type": "text/plain" })
     respons.write(result);

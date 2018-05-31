@@ -15,7 +15,7 @@ module.exports =  class LinkedList {
 		
 			
 		if (this.length === 0) {
-			console.log("Fail. " + value + " undefined.");						
+			console.log("1Fail. " + value + " undefined.");						
 			return "Fail";
 		}
 
@@ -25,13 +25,12 @@ module.exports =  class LinkedList {
 		if (thisNode.value === value) {
 			this.head = this.head.next;
 			this.length--;
-			return this;
+			return "Success";
 		}
- console.log(typeof thisNode.value);
  
 		for (let i = 0; i < this.length; i++) {
 			if (beforNode === null) {
-				console.log("Fail. " + value + " undefined.");			
+				console.log("2Fail. " + value + " undefined.");			
 				return "Fail";
 			}
 
