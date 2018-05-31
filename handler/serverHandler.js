@@ -9,13 +9,18 @@ function getCommonHandler(apiConfig) {
             path = handlers.parsePath(pathname);
             
         ++countRquest;	
-        //handler = (path[0] === "list") ? path[0] : handlers.get(apiConfig, path);	
         handler = handlers.get(apiConfig, path);	
+
 		if (handler) {	
-            
-            
             serviceData.add("" + countRquest + "");
-            handlers.writeResult(res, handler);
+            if (path.length > 1) {
+                // path[1] = "remove:value" of "find:value"
+                path = path[1].split(":",2);
+                handlers.writeResultOperation(res, path);
+                       
+            } else {
+                handlers.writeResult(res, handler);
+            } 
 		} else {
 			handlers.writeError(res);
 		}

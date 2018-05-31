@@ -7,20 +7,17 @@ let LinkedList = require("./LinkedList"),
 class DataService {
 	
 	constructor(LinkedList) {
-		this.add = LinkedList.addOnList;
-		this.remove = LinkedList.removeFromList;
-		this.find = LinkedList.findInList;
-		this.view = LinkedList;
+		this.list = LinkedList;
 	}
 
 	add(value){
-		this.ad(value);
+		this.list.addOnList(value);
 	}
 	
 	remove(value) {
-		result = super.removeFromList(value);
+		result = this.list.removeFromList(value);
 	
-		if (result === Success) {
+		if (result === "Success") {
 			result = Success + value + " removed.";
 		} else {
 			result = Fail + value + " undefined.";
@@ -29,9 +26,9 @@ class DataService {
 	}
 	
 	find(value) {
-		result = super.findInList(value);
+		result = this.list.findInList(value);
 	
-		if (result === Success) {
+		if (result === "Success") {
 			result = Success + value + " found.";
 		} else {
 			result = Fail + value + " not found.";
@@ -40,11 +37,10 @@ class DataService {
 		return result;
 	}
 
-	viewList() { 
-		console.log("123",this.view);
-		console.log("1233",LinkedList);
-		LinkedList;
-	}
+	First() { return "First1"; }
+    Second() { return { "test": "Second" }; }
+	Third() {  }
+	viewList() { return LinkedList; }
 }
 
 module.exports = new DataService(LinkedList);
