@@ -1,7 +1,15 @@
-let url = require("url"),
+let http = require("http"),
+    url = require("url"),
+    getParam = require("./Util/common"),
+    port = getParam("port", 4001),
     handlers = require("./handler/requestHandlers");
 
-module.exports = function getCommonHandler(apiConfig) {	
+module.exports = function startServer(apiConfig) {
+	http.createServer(getCommonHandler(apiConfig)).listen(port);
+	console.log(`Server started on ${port} port.`);
+} 
+
+function getCommonHandler(apiConfig) {	
 	return function (req, res) {
 		let pathname = url.parse(req.url).pathname,
             path = handlers.parsePath(pathname),
