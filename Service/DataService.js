@@ -9,35 +9,34 @@ module.exports = class DataService {
 
 	add(){	
 		++number;
-		this.list.addOnList(`${number}`);
-
-		return result = `Success! ${number} added.`;
+		result = this.list.addOnList(`${number}`);
+		return result;
 	}
 	
 	remove() {
 		result = this.list.removeFromList(`${number}`);
-
-		if (result === "Success") {
-			result = `Success! ${number} removed.`;
-		} else {
-			result = `Fail! ${number} undefined.`;
-		}
-		return result;
+		return messageResult(result, "remove");
 	}
 	
 	find() {
 		result = this.list.findInList(`${number}`);
-	
-		if (result === "Success") {
-			result = `Success! ${number} found.`;
-		} else {
-			result = `Fail! ${number} not found.`;
-		}
-	
-		return result;
+		return messageResult(result, "find");
 	}
 
 	test1() { return "test1"; }
     test2() { return { "test": "test2" }; }
 	test3() { }
+}
+
+function messageResult(result, operation) {
+	let success = (operation === "remove") ? `Success! ${number} removed.` : `Success! ${number} found.`,
+	    fail = (operation === "remove") ? `Fail! ${number} undefined` : `Fail. ${number} not found.`;
+
+	if (result === "Success") {
+		result = success;
+	} else {
+		result = fail;
+	}
+
+	return result;
 }

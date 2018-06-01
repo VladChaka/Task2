@@ -42,10 +42,7 @@ function writeResultInResponse(respons, handler) {
 	let contentType,
 	    code = 200,
 		result = (typeof handler === "object") ? handler : handler();	
-
-		console.log(result);
 		
-
 	if (result === undefined || result === null) {
 		contentType= '"Content-Type": "text/plain"';
 		code = 204;

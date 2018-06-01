@@ -9,6 +9,7 @@ module.exports =  class LinkedList {
 		newNode.next = this.head;
 		this.head = newNode;
 		this.length++;
+		return `Success! ${value} added.`
 	}
 
 	removeFromList(value) {	
