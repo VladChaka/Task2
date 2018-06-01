@@ -4,7 +4,7 @@ let http = require("http"),
     port = getParam("port", 4001),
     handlers = require("./handler/requestHandlers");
 
-module.exports = function startServer(apiConfig) {
+module.exports = function (apiConfig) {
 	http.createServer(getCommonHandler(apiConfig)).listen(port);
 	console.log(`Server started on ${port} port.`);
 } 
