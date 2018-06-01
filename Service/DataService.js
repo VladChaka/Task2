@@ -1,42 +1,46 @@
-let result,
-	number = 0;
+let LinkedList = require("../Util/LinkedList"),
+    result,
+    number = 0;
 
-module.exports = class DataService {
+module.exports = function DataServise () {
+	var self = this;
 
-	constructor(LinkedList) {
-		this.list = new LinkedList();
-	}
+	self._list = new LinkedList;
 
-	add(){	
+	self.add = function () {
 		++number;
-		result = this.list.addOnList(`${number}`);
+		result = self._list.addOnList(`${number}`);
+		console.log(self._list);
+		
 		return result;
 	}
+
+	self.remove = function () {
+		result = self._list.removeFromList(`${number}`);
+		return self.messageResult(result, "remove");
+	}
+
+	self.find = function () {
+		result = self._list.findInList(`${number}`);
+		return self.messageResult(result, "find");
+	}
+
+	self.viewList = function () { return self._list; }
+
+	self.test1 = function () { return "test1"; }
+	self.test2 = function () { return { "test": "test2" }; }
+	self.test3 = function () { }
+
+	self.messageResult = function (result, operation) {
+		let success = (operation === "remove") ? `Success! ${number} removed.` : `Success! ${number} found.`,
+			fail = (operation === "remove") ? `Fail! ${number} undefined` : `Fail. ${number} not found.`;
 	
-	remove() {
-		result = this.list.removeFromList(`${number}`);
-		return messageResult(result, "remove");
-	}
+		if (result === "Success") {
+			result = success;
+		} else {
+			result = fail;
+		}
 	
-	find() {
-		result = this.list.findInList(`${number}`);
-		return messageResult(result, "find");
+		return result;
 	}
-
-	test1() { return "test1"; }
-    test2() { return { "test": "test2" }; }
-	test3() { }
-}
-
-function messageResult(result, operation) {
-	let success = (operation === "remove") ? `Success! ${number} removed.` : `Success! ${number} found.`,
-	    fail = (operation === "remove") ? `Fail! ${number} undefined` : `Fail. ${number} not found.`;
-
-	if (result === "Success") {
-		result = success;
-	} else {
-		result = fail;
-	}
-
-	return result;
 }

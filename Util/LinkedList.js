@@ -1,4 +1,4 @@
-module.exports =  class LinkedList {
+module.exports = class LinkedList {
 	constructor() {
 		this.head = null;
 		this.length = 0;

@@ -1,6 +1,19 @@
-let LinkedList = require("../Util/LinkedList"),
-    DataService = require("../Service/DataService"),
-    DataServiceFirst = new DataService(LinkedList);
+let url = require("url");
+	
+function getCommonHandler(apiConfig) {	
+	return function (req, res) {
+		let pathname = url.parse(req.url).pathname,
+			path = parsePath(pathname),
+			handler = getHandler(apiConfig, path);	     
+	
+		if (handler) {				
+			writeResultInResponse(res, handler);
+		} else {
+			writeNotFoundError(res);
+		}
+		res.end();
+	}
+}
 
 function parsePath(pathname) {	
 	let splitPath = pathname.split("/");			
@@ -11,31 +24,12 @@ function parsePath(pathname) {
 function getHandler(apiConfig, pathNodes, index) {
 	index = index || 0;
 	let result = apiConfig[pathNodes[index]];
-	if (pathNodes[0] !== "list") {
-		
-		if (typeof result === "object") {
-			result = getHandler(result, pathNodes, ++index);
-		}
-	} 
+	
+	if (typeof result === "object") {
+		result = getHandler(result, pathNodes, ++index);
+	}
 
     return result;
-}
-
-function writeResultOperationOnList(respons, path) {
-	let value = path[1],
-	    result;
-	if (path === "remove") {
-		result = DataServiceFirst.remove();
-	} else if (path === "find") {
-	    result = DataServiceFirst.find();
-    } else if (path === "add") {
-		result = DataServiceFirst.add();
-	} else {
-		return writeNotFoundError(respons);
-	}
-			
-    respons.writeHead(200, { "Content-Type": "text/plain" })
-    respons.write(result);
 }
 
 function writeResultInResponse(respons, handler) {
@@ -65,9 +59,8 @@ function writeNotFoundError(respons) {
 	respons.write("Error: 404. Page not found.");
 }
 
+module.exports.getCommonHandler = getCommonHandler;
 module.exports.parsePath = parsePath;
 module.exports.getHandler = getHandler; 
-module.exports.writeResultOperationOnList = writeResultOperationOnList; 
 module.exports.writeResultInResponse = writeResultInResponse; 
 module.exports.writeNotFoundError = writeNotFoundError; 
-module.exports.DataServiceFirst = DataServiceFirst; 
