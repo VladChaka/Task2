@@ -1,4 +1,5 @@
-let LinkedList = require("../Util/LinkedList");
+let LinkedList = require("../Util/LinkedList"),
+    User = require("../models/user");
 
 module.exports = function DataServise () {
 	var self = this,
@@ -7,12 +8,20 @@ module.exports = function DataServise () {
 	self._list = new LinkedList;
 
 	self.add = function () {
-		let result;
-
 		++number;
+		let result,
+		    newUser = new User({
+				name: `User ${number}`,
+				age: 21
+			});
+
+		newUser.save(function(err){
+			if (err) throw err;
+		})	
+		
 		result = self._list.add(`${number}`);
 		
-		return result;
+		return `Success! ${number} added;`;
 	}
 
 	self.remove = function () {
